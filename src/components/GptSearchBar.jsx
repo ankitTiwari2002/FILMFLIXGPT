@@ -7,16 +7,11 @@ import runChat from "../utils/gemini";
 import Loading from "./Loading"
 
 function GptSearchBar() {
-<<<<<<< HEAD
   const search = useRef(null);
-=======
   const [loader, setLoader] = useState(false)
-  const [prompt, setPrompt] = useState("")
 
->>>>>>> 3fd3e9e2527eb3e88dd148b2e4186618a5d1a056
   const langKey = useSelector((store) => store.config?.lang);
   const dispatch = useDispatch();
-  const [loader, setLoader]= useState(false);
 
   const searchMovieTMDB = async (movie) => {
     const data = await fetch(
@@ -29,7 +24,6 @@ function GptSearchBar() {
 
   const handleGptSearch = async () => {
     setLoader(true)
-<<<<<<< HEAD
     const searchText = search.current.value;
     const response = await runChat(`Act as a Movie Recommendation system and suggest me 10 movies from the query: ${searchText}. Only give me names of one movie, comma separated like the result given ahead. Example: Gadar, Sholay, Don, Goalmaal, Krish`);
     
@@ -44,7 +38,6 @@ function GptSearchBar() {
       addGptMovieResult({ movieNames: gptMovies, movieResults: tmdbResults })
     );
     setLoader(false);
-=======
     //API call
     try {
       const response = await runChat("Act as a Movie Recommendation system and suggest me 10 movies from the query:" + prompt + "only give me names of one movie, comma seperated like the result given ahead. Example: Gadar, Sholay, Don, Goalmaal, Krish")
@@ -66,7 +59,6 @@ function GptSearchBar() {
     } finally {
       setLoader(false)
     }
->>>>>>> 3fd3e9e2527eb3e88dd148b2e4186618a5d1a056
   };
   return (
     <div className="pt-[50%] md:pt-[12%] flex flex-wrap">
@@ -88,12 +80,9 @@ function GptSearchBar() {
 
         </button>
       </form>
-<<<<<<< HEAD
       {loader?<Loading/>:null}
-=======
 
       {loader ? <Loading /> : null}
->>>>>>> 3fd3e9e2527eb3e88dd148b2e4186618a5d1a056
     </div>
   );
 }
