@@ -151,7 +151,7 @@ const Login = () => {
             onClick={toggleSignInForm}
           >
             {isSignInForm
-              ? "New to Netflix? Sign Up Now"
+              ? "New to Filmflix? Sign Up Now"
               : "Already registered? Sign In Now"}
           </p>
         </div>
