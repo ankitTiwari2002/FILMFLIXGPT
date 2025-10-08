@@ -23,6 +23,8 @@ function GptSearchBar() {
   };
 
   const handleGptSearch = async () => {
+    //API call
+    try {
     setLoader(true)
 
     const searchText = search.current.value;
@@ -39,21 +41,6 @@ function GptSearchBar() {
     dispatch(
       addGptMovieResult({ movieNames: gptMovies, movieResults: tmdbResults })
     );
-    setPrompt("");
-    setLoader(false);
-    //API call
-    try {
-      const response = await runChat(`Act as a Movie Recommendation system and suggest me 5 movies from the query: ${searchText}. Only give me movie names and also include ${searchText} in your result as a first name seperated by "," like the result given ahead. Example: Gadar, Sholay, Don, Goalmaal, Krish.`);
-    
-      const gptMovies = response.split(",");
-  
-  
-      const promiseArray = gptMovies.map((movie) => searchMovieTMDB(movie));
-      const tmdbResults = await Promise.all(promiseArray);
-      console.log(tmdbResults);
-      dispatch(
-        addGptMovieResult({ movieNames: gptMovies, movieResults: tmdbResults })
-      );
     } catch (error) {
       console.log(error.message)
     } finally {
@@ -78,8 +65,6 @@ function GptSearchBar() {
           onClick={handleGptSearch}
         >
            { loader ? "Loading..." : lang[langKey]?.search }
-
-
         </button>
       </form>
     </div>
