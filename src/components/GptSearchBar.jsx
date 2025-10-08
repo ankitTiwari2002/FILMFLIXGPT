@@ -24,9 +24,8 @@ function GptSearchBar() {
 
   const handleGptSearch = async () => {
     //API call
+    setLoader(true);
     try {
-    setLoader(true)
-
     const searchText = search.current.value;
     if(searchText.trim() == "") return;
     const response = await runChat(`Act as a Movie Recommendation system and suggest me 5 movies from the query: ${searchText}. Only give me movie names and also include ${searchText} in your result as a first name seperated by "," like the result given ahead. Example: Gadar, Sholay, Don, Goalmaal, Krish.`);
@@ -44,8 +43,8 @@ function GptSearchBar() {
     } catch (error) {
       console.log(error.message)
     } finally {
-      setPrompt("");
-      setLoader(false)
+      searchText = "";
+      setLoader(false);
     }
   };
   return (
