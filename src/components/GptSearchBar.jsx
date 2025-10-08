@@ -1,21 +1,24 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import lang from "../utils/languageConstants";
 import { API_OPTIONS } from "../utils/constants";
 import { addGptMovieResult } from "../utils/gptSlice";
+import { useState } from "react";
 import runChat from "../utils/gemini";
 import Loading from "./Loading"
 
 function GptSearchBar() {
-  const search = useRef(null);
   const [loader, setLoader] = useState(false)
+  const [prompt, setPrompt] = useState("")
 
   const langKey = useSelector((store) => store.config?.lang);
   const dispatch = useDispatch();
 
   const searchMovieTMDB = async (movie) => {
     const data = await fetch(
-      `https://api.themoviedb.org/3/search/movie?query=${movie}&include_adult=false&language=en-US&page=1`,
+      "https://api.themoviedb.org/3/search/movie?query=" +
+      movie +
+      "&include_adult=false&language=en-US&page=1",
       API_OPTIONS
     );
     const json = await data.json();
@@ -24,28 +27,25 @@ function GptSearchBar() {
 
   const handleGptSearch = async () => {
     setLoader(true)
-    const searchText = search.current.value;
-    const response = await runChat(`Act as a Movie Recommendation system and suggest me 10 movies from the query: ${searchText}. Only give me names of one movie, comma separated like the result given ahead. Example: Gadar, Sholay, Don, Goalmaal, Krish`);
-    
-    const gptMovies = response.split(",").map(movie => movie.trim());
-    const promiseArray = gptMovies.map((movie) => searchMovieTMDB(movie));
-    const tmdbResults = await Promise.all(promiseArray);
-
-    console.log("GPT Movies:", gptMovies);
-    console.log("TMDB Results:", tmdbResults);
-
-    dispatch(
-      addGptMovieResult({ movieNames: gptMovies, movieResults: tmdbResults })
-    );
-    setLoader(false);
     //API call
     try {
-      const response = await runChat("Act as a Movie Recommendation system and suggest me 10 movies from the query:" + prompt + "only give me names of one movie, comma seperated like the result given ahead. Example: Gadar, Sholay, Don, Goalmaal, Krish")
+
+      console.log(prompt)
+      console.log(prompt + "Aryan")
+
+      if(prompt.trim() == "") return;
+
+      const response = await runChat(Act as a Movie Recommendation system and suggest me 5 movies from the query: ${prompt}. Only give me movie names and also include ${prompt} in your result as a first name seperated by "," like the result given ahead. Example: Gadar, Sholay, Don, Goalmaal, Krish.)
+
+      console.log(response + "whwhwhwh")
+
   
       console.log("coming from here : ", response)
       console.log(typeof (response))
   
       const gptMovies = response.split(",");
+
+      console.log(gptMovies + "ankit")
   
   
       const promiseArray = gptMovies.map((movie) => searchMovieTMDB(movie));
@@ -57,6 +57,7 @@ function GptSearchBar() {
     } catch (error) {
       console.log(error.message)
     } finally {
+      setPrompt("");
       setLoader(false)
     }
   };
@@ -67,24 +68,23 @@ function GptSearchBar() {
         onSubmit={(e) => e.preventDefault()}
       >
         <input
-          type="text"
           className="w-96 px-3 py-3 text-lg rounded-lg"
-          ref={search}
+          type="text"
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
           placeholder={lang[langKey]?.gptSearchPlaceHolder}
         />
         <button
           className="px-4 py-2 rounded-lg text-white bg-red-600"
           onClick={handleGptSearch}
         >
-          {lang[langKey]?.search}
-
+          { loader ? "Loading..." : lang[langKey]?.search }
         </button>
       </form>
-      {loader?<Loading/>:null}
 
-      {loader ? <Loading /> : null}
+      {/* {loader ? <Loading /> : null} */}
     </div>
   );
 }
 
-export default GptSearchBar;
+export default GptSearchBar;
