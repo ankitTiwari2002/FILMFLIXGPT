@@ -7,8 +7,8 @@ import runChat from "../utils/gemini";
 import Loading from "./Loading"
 
 function GptSearchBar() {
-  const search = useRef(null);
-  const [loader, setLoader] = useState(false)
+  const [prompt, setPrompt] = useState("");
+  const [loader, setLoader] = useState(false);
 
   const langKey = useSelector((store) => store.config?.lang);
   const dispatch = useDispatch();
@@ -26,9 +26,8 @@ function GptSearchBar() {
     //API call
     setLoader(true);
     try {
-    const searchText = search.current.value;
-    if(searchText.trim() == "") return;
-    const response = await runChat(`Act as a Movie Recommendation system and suggest me 5 movies from the query: ${searchText}. Only give me movie names and also include ${searchText} in your result as a first name seperated by "," like the result given ahead. Example: Gadar, Sholay, Don, Goalmaal, Krish.`);
+   if(prompt.trim() == "") return;
+    const response = await runChat(`Act as a Movie Recommendation system and suggest me 5 movies from the query: ${prompt}. Only give me movie names and also include ${prompt} in your result as a first name seperated by "," like the result given ahead. Example: Gadar, Sholay, Don, Goalmaal, Krish.`);
     
     const gptMovies = response.split(",").map(movie => movie.trim());
     const promiseArray = gptMovies.map((movie) => searchMovieTMDB(movie));
@@ -43,7 +42,7 @@ function GptSearchBar() {
     } catch (error) {
       console.log(error.message)
     } finally {
-      searchText = "";
+      setPrompt("");
       setLoader(false);
     }
   };
@@ -56,7 +55,8 @@ function GptSearchBar() {
         <input
           type="text"
           className="w-96 px-3 py-3 text-lg rounded-lg"
-          ref={search}
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
           placeholder={lang[langKey]?.gptSearchPlaceHolder}
         />
         <button
